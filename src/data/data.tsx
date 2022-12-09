@@ -1,7 +1,7 @@
 import { fetchUtils } from "react-admin";
 import { stringify } from "query-string";
+import envs from "../envs";
 
-const apiUrl = "https://8803-yurihartman-carlifescic-h0ybo7rj46s.ws-us78.gitpod.io";
 const httpClient = fetchUtils.fetchJson;
 
 export const dataProvider = {
@@ -13,34 +13,22 @@ export const dataProvider = {
         //     range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
         //     filter: JSON.stringify(params.filter),
         // };
-        const url = `${apiUrl}/invoke/car-lifes-cicle-channel/alo`;
+        const url = `${envs.BACKEND_URL}/invoke/car-lifes-cicle-channel/alo`;
         let body = {
             method: "AssetTransferContract:GetAllAssets",
             args: []
         };
-        console.log("getList", body)
-        let data_response: any = []
-        // httpClient(url,
-        //     {
-        //         method: 'POST',
-        //         body: JSON.stringify(body),
-        //         headers: {
-        //             Authorization: `Bearer ${localStorage.getItem("token")}`
-        //         }
-        //     }).then(({ headers, json }) => (
-        //         data = json.response
-        //     ));
-        fetch(url, {
+        return httpClient(url, {
             method: 'POST',
-            body: JSON.stringify(body),
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`
-            }
-        }).then(response => response.json())
-            .then(data => data_response = data)
-
-        console.log(data_response)
-        return Promise.resolve({ data: [], total: 0 })
+            user: {
+                authenticated: true,
+                token: `Bearer ${localStorage.getItem("token")}`
+            },
+            body: JSON.stringify(body)
+        }).then(({ json }) => ({
+            data: json.response,
+            total: 0,
+        }));
     },
 
     getOne: (resource: any, params: { id: any; }) =>

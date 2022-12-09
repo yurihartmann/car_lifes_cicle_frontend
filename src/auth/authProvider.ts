@@ -1,11 +1,10 @@
 import { fetchUtils } from "react-admin";
-
-let URL = "https://8803-yurihartman-carlifescic-h0ybo7rj46s.ws-us78.gitpod.io"
+import envs from "../envs";
 
 export const authProvider = {
     // called when the user attempts to log in
     login: ({ username, password }) => {
-        fetch(`${URL}/user/enroll`, {
+        fetch(`${envs.BACKEND_URL}/user/enroll`, {
             method: 'POST',
             body: JSON.stringify({
                 "id": username,
@@ -13,6 +12,12 @@ export const authProvider = {
             }),
         }).then(response => response.json())
             .then(data => localStorage.setItem("token", data.token))
+
+        let func = () => {
+            console.log('Yuri inteligente 5 segundos depois')
+        }
+
+        setTimeout(func, 5000)
 
         return Promise.resolve();
     },
